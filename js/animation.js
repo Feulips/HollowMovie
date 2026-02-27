@@ -49,4 +49,5 @@ window.addEventListener("load", function() {
         console.error("Erro:", error);
         filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
     }
+
     }
