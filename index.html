@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/script.js" defer></script>
+    <script src="js/animation.js" defer></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/jpg" href="assets/icons/icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>Hollowovie</title>
+
+</head>
+<body>
+
+<div id="loading2"  class="loading2">
+    <div class="move"> <img src="../assets/icons/loading2.gif"></div>
+  <p>Aguarde… enquanto antigas histórias ganham forma na luz tremulante...</p>
+</div>
+
+<div id="loading"><div class="loader">
+        <p>Entering Hallowovie</p>
+        <div class="barra">
+            <div class="preenchimento"></div>
+        </div>
+    </div></div>
+<header>
+    <div class="container-header-conteudo">
+        <a href="index.html"><img src="assets/icons/icon.png" id="logoImg" alt=""></a>
+        <h1 class="logo"><span>Things to Watch</span></h1>
+        <nav class="navegacao">
+            <a href="index.html" id="inicio">inicio</a>
+            <a href="#" id="filmes">filmes</a>
+            <a href="#" id="series">series</a>
+                <button onclick="toggleLight()" id="themeButton"><i id="themeIcon" class="bi bi-brightness-high"></i>
+</button>
+        </nav>
+    </div>
+</header>
+<main>
+    <section class="pesquisa-section">
+        <div class="container-pesquisa-conteudo">
+            <input type="text" placeholder=" Pesquisar por filme... " id="campoPesquisa">
+            <button class="pesquisa-button" id="botaoPesquisa">
+                <img src="assets/icons/lupa.png" alt="Pesquisar" height="12" width="12">
+            </button>
+        </div>
+    </section>
+
+    <section class="exibeFilme-section">
+        <div  id="filmesGrid" onclick="funcao(loading2)"></div>
+    </section>
+</main>
+    <footer class="footer">
+        <p>Desenvolvido por Felps @2026</p>
+    </footer>
+</body>
+</html>
