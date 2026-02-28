@@ -24,9 +24,9 @@ window.addEventListener("load", function() {
         setTimeout(() => {
             loading.style.display = "none";
             loading.style.opacity = "1";
-            document.body.style.overflow = "auto";}, 1000);
+            document.body.style.overflow = "auto";}, 3000);
         }
-    , 2000);   
+    , 4000);   
     });
 
     async function requisicaoURL(url) {
@@ -43,8 +43,8 @@ window.addEventListener("load", function() {
         filmesGrid.classList.add("fade-out");
         setTimeout(()=>{
             filmesGrid.classList.remove("fade-in");
-            }, 300);
-        }, 200);
+            }, 500);
+        }, 600);
     } catch (error) {
         console.error("Erro:", error);
         filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
