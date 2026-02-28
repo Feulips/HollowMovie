@@ -416,6 +416,7 @@ a img:hover {
     margin-top: 1rem;   
     background-color: var(--grafite);
     border: solid 2px var(--azul-secundario);
+    justify-content: center;
 }
 
 .detailsContainer img {
@@ -430,6 +431,25 @@ a img:hover {
     color: var(--texto);           
 }
 
+
+.info{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.info h2 {
+    font-size: 2rem;
+    color: var(--azul);
+}
+
+.info p {
+    font-size: 1.2rem;
+    color: var(--cinza-light);
+    alingn-self: center;
+    
+}
 
 .fade-in{
     opacity: 0;
