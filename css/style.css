@@ -461,6 +461,37 @@ a img:hover {
     transform: translateY(0);
 }
 
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; 
+    margin: 2rem 0;
+}
+
+#botaoVoltar, 
+#botaoProximo {
+    background-color: var(--azul);
+    border: none;
+    padding: 12px 28px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#botaoVoltar:hover, 
+#botaoProximo:hover {
+    transform: translateY(-3px);
+    background-color: var(--azul-secundario);
+}
+
+#botaoVoltar:active, 
+#botaoProximo:active {
+    transform: scale(0.95);
+}
 
 
 /*responsivo (arrumar depois)*/

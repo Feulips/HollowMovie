@@ -96,7 +96,25 @@ filmes.addEventListener("click", buscaFilme);
 series.addEventListener("click", buscaSerie);
 
 
+const botaoVoltar = document.getElementById("botaoVoltar");
+const botaoProximo = document.getElementById("botaoProximo");
 
+let paginaAtual = 1;
+
+
+function pularPagina() {
+  paginaAtual++;
+    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR&page=${paginaAtual}`; 
+    requisicaoURL(url); 
+}
+
+function voltarPagina() {
+    if (paginaAtual > 1) {
+        paginaAtual--;
+    }
+    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR&page=${paginaAtual}`; 
+    requisicaoURL(url); 
+}
 
 
 

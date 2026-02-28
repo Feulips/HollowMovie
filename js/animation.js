@@ -24,9 +24,9 @@ window.addEventListener("load", function() {
         setTimeout(() => {
             loading.style.display = "none";
             loading.style.opacity = "1";
-            document.body.style.overflow = "auto";}, 3000);
+            document.body.style.overflow = "auto";}, 1000);
         }
-    , 4000);   
+    , 2000);   
     });
 
     async function requisicaoURL(url) {
