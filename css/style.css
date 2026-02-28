@@ -145,8 +145,7 @@ nav button {
 .move{
     position: absolute;
     top: 50%;
-    left: 47.5%;
-    transform: translate(-50%, -50%);
+    left: 50%;
     width: 90px;
     height: 90px;
     animation: mover 2s alternate infinite;
@@ -154,14 +153,13 @@ nav button {
 
 @keyframes mover{
     0%{
-        transform: translateX(-400%);
+        transform: translateX(300%);
     }
 
     100%{
-        transform: translateX(300%)
+        transform: translateX(-400%)
     }
 }
-
 
 /*inicio*/
 body{
@@ -187,10 +185,11 @@ header{
 }
 
 .container-header-conteudo {
-    padding: 1rem;
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 2rem;
     flex-wrap: wrap;
 }
 
@@ -203,15 +202,15 @@ main{
 }
 
 
-h1.logo {
+h1 {
+    position: relative; 
+    left: 5%;
+    margin: 0 auto;   
     font-family: "Cinzel Decorative", serif;
     font-weight: 700;
-    font-style: normal;
     color: var(--cinza-light);
     animation: floating 1.8s ease-in-out infinite;
     text-align: center;
-     position: absolute;
-    left: 38%;
 }
 
 @keyframes floating {
@@ -232,25 +231,26 @@ h1.logo {
     }
 }
 
-a{
-    text-decoration:none;
-    color: var(--cinza-light);
+.navegacao {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
-
-a:hover {
+.navegacao a {
+    text-decoration: none;
+    color: var(--cinza-light);
+    transition: color 0.3s;
+}
+.navegacao a:hover {
     color: var(--azul);
     text-decoration: underline;
-    transition: color 0.3s;
-    cursor: url("http://www.rw-designer.com/cursor-extern.php?id=228789"), auto;
 }
 
-
 a img {
-    text-decoration: underline;
-    transition: color 0.3s;
-    animation: floating2 3s ease-in-out infinite;
     width: 70px;
     height: 70px;
+    animation: floating2 3s ease-in-out infinite;
+    transition: transform 0.3s; /* transição para o scale no hover */
 }
 
 a img:hover {
@@ -259,23 +259,11 @@ a img:hover {
     cursor: url("http://www.rw-designer.com/cursor-extern.php?id=228796"), auto;
 }
 
+/* Animação flutuante */
 @keyframes floating2 {
-    0% {
-        transform: scale(0.9);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(0.9);
-    }
-}
-
-
-.navegacao{
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(0.9); }
 }
 
 .container-pesquisa-conteudo{
@@ -385,23 +373,25 @@ p.footer {
 
 /*detalhes*/
 .detalhe-card {
-    display: flex;              
-    align-items: center;
-    justify-content: space-between; 
-    padding: 1rem;
-    gap: 20px;                  
-    background-color: var(--azul); 
-    color: var(--texto);
-    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: 1rem;   
+    background-color: var(--grafite);
+    border: solid 2px var(--azul-secundario);
 }
 
 .detailsContainer img {
-    max-width: 500px;           
-    height: auto;               
+    width: 300px;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 10px;             
 }
 
 .detailsContainer .text {
-    flex: auto;                    
+    max-width: 600px;
+    color: var(--texto);           
 }
 
 
