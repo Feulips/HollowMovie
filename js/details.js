@@ -26,13 +26,15 @@ async function carregarDetalhes() {
 }
 
 function renderizarDetalhes(item) {
+  
     const imagem = item.poster_path ? IMAGE_URL + item.poster_path : "";
 
     const titulo = item.title || item.name;
     const dataLancamento = item.release_date || item.first_air_date; 
     document.title = titulo;
     detailsContainer.innerHTML = `<div class="detalhe-card"> <img src="${imagem}" alt="${titulo}">
-            <div class="info"> <h2>${titulo}</h2> <p>Data: ${dataLancamento} || "Não disponivel"}<br></p>
+            <div class="info"> <h2>${titulo}</h2> 
+            <p>Data: ${dataLancamento || "Não disponível"}</p>
             <p>Nota: ${item.vote_average}<br>
             ${item.tagline}<br>
             ${item.overview}</p>
@@ -40,30 +42,9 @@ function renderizarDetalhes(item) {
     </div>`;
 }
 
+
 document.addEventListener("DOMContentLoaded", carregarDetalhes);
 
-
-
-
-//salva o thema :p
-  function toggleLight() {
-  const body = document.body;
-  body.classList.toggle("light");
-
-  const icon = document.getElementById("themeIcon");
-  icon.classList.toggle("bi-brightness-high");
-  icon.classList.toggle("bi-moon");
-
-  const logo = document.getElementById("logoImg");
-
-  if (body.classList.contains("light")) {
-    localStorage.setItem("theme", "light");
-    logo.src = "../assets/icons/icon2.png";
-  } else {
-    localStorage.setItem("theme", "dark"); 
-    logo.src = "../assets/icons/icon.png";
-  }
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme");

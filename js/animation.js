@@ -1,20 +1,3 @@
-window.addEventListener("load", function() {
-    const loading = this.document.getElementById("loading");
-    
-    setTimeout (() => { 
-        loading.style.opacity = "0";
-
-        setTimeout(() => {
-            loading.style.display = "none";
-            loading.style.opacity = "1";
-            document.body.style.overflow = "auto";}, 1000);
-        }
-    , 2000);   
-    });
-
-
-
-
     window.addEventListener("load", function() {
     const loading = document.getElementById("loading2");
     
@@ -24,9 +7,9 @@ window.addEventListener("load", function() {
         setTimeout(() => {
             loading.style.display = "none";
             loading.style.opacity = "1";
-            document.body.style.overflow = "auto";}, 3000);
+            document.body.style.overflow = "auto";}, 1000);
         }
-    , 4000);   
+    , 2500);   
     });
 
     async function requisicaoURL(url) {
@@ -43,8 +26,8 @@ window.addEventListener("load", function() {
         filmesGrid.classList.add("fade-out");
         setTimeout(()=>{
             filmesGrid.classList.remove("fade-in");
-            }, 500);
-        }, 600);
+            }, 300);
+        }, 400);
     } catch (error) {
         console.error("Erro:", error);
         filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
