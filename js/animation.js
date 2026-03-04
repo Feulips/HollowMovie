@@ -33,3 +33,4 @@
         filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
     }
     }
+//se chegou até aqui, parabéns, você é um herói por ler todo o código :)

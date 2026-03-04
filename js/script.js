@@ -115,3 +115,5 @@ function voltarPagina() {
     const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR&page=${paginaAtual}`; 
     requisicaoURL(url); 
 }
+
+//se chegou até aqui, parabéns, você é um herói por ler todo o código :)
