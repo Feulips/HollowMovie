@@ -33,6 +33,9 @@
     </div>
 </header>
 <main>
+    
+    
+   
     <section class="pesquisa-section">
         <div class="container-pesquisa-conteudo">
             <input type="text" placeholder=" Pesquisar por filme... " id="campoPesquisa">
@@ -41,6 +44,31 @@
             </button>
         </div>
     </section>
+<div class="filtros">
+ <select id="filtroGenero"></select>
+    <select id="filtroAno">
+        <option value="">Todos os Anos</option>
+    </select>
+    
+    <select id="filtroNota">
+        <option value="">Qualquer Nota</option>
+        <option value="5">5+</option>
+        <option value="6">6+</option>
+        <option value="7">7+</option>
+        <option value="8">8+</option>
+    </select>
+<select id="filtroPais">
+    <option value="">Todos os países</option>
+    <option value="US">Estados Unidos</option>
+    <option value="BR">Brasil</option>
+    <option value="KR">Coreia do Sul</option>
+    <option value="JP">Japão</option>
+    <option value="ES">Espanha</option>
+    <option value="FR">França</option>
+    <option value="GB">Reino Unido</option>
+</select>
+</div>
+
 
     <section class="exibeFilme-section">
         <div  id="filmesGrid" onclick="funcao(loading2)"></div>

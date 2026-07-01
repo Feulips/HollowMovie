@@ -32,4 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+document.addEventListener("DOMContentLoaded", function(){
+    const inicio = document.getElementById("inicio");
+    const filmes = document.getElementById("filmes"); 
+    const series = document.getElementById("series"); 
+
+    inicio.addEventListener("click", function(){
+        window.location.href = "../index.html";
+    });
+    filmes.addEventListener("click", function(){
+        window.location.href = "../index.html?tipo=filmes"; 
+    });
+    series.addEventListener("click", function(){
+        window.location.href = "../index.html?tipo=series";
+    });
+});
+
+
 //se chegou até aqui, parabéns, você é um herói por ler todo o código :)

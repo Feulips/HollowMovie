@@ -82,7 +82,7 @@ nav button {
     left: 50%;
     width: 90px;
     height: 90px;
-    animation: mover 2s alternate infinite;
+    animation: mover 0.9s alternate infinite;
 }
 
 @keyframes mover{
@@ -184,7 +184,7 @@ header a img {
     width: 70px;
     height: 70px;
     animation: floating2 3s ease-in-out infinite;
-    transition: transform 0.3s; /* transição para o scale no hover */
+    transition: transform 0.3s; 
 }
 
 header a img:hover {
@@ -193,7 +193,7 @@ header a img:hover {
     cursor: url("http://www.rw-designer.com/cursor-extern.php?id=228796"), auto;
 }
 
-/* Animação flutuante */
+/* Animaçãoo flutuante */
 @keyframes floating2 {
     0% { transform: scale(0.9); }
     50% { transform: scale(1.1); }
@@ -246,6 +246,33 @@ header a img:hover {
     cursor: url("http://www.rw-designer.com/cursor-extern.php?id=228789"), auto;
 }
 
+.filtros {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.filtros select {
+    padding: 8px 12px;
+    border: 1px solid var(--cinza-light);
+    border-radius: 6px;
+    background-color: var(--grafite);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--texto);
+}
+
+.filtros select:hover {
+    border-color: var(--primario);
+}
+
+.filtros select:focus{
+background-color: var(--grafite);
+color: var(--texto);
+}
+
+
 .footer {
     padding: 1rem 2rem 2rem 2rem;
     border-top: 2px solid var(--primario);
@@ -287,7 +314,7 @@ header a img:hover {
     }
     50% {
         transform: scale(1.05);
-        opacity: 0.7;
+        opacity: 0.5;
     }
     100% {
         transform: scale(1);
@@ -347,7 +374,7 @@ header a img:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column; /* para o h3 ficar em cima do trailer */
+    flex-direction: column; 
     padding: 20px;
     font-family: 'Arial', sans-serif;
     background-color: var(--preto);
@@ -473,11 +500,14 @@ header a img:hover {
 .fade-in{
     opacity: 0;
     transform: translateY(10px);
+    transition: opacity 0.5s ease;
+
 }
 
 .fade-out{
     opacity: 1;
     transform: translateY(0);
+    transition: opacity 0.5s ease;
 }
 
 .paginacao {
@@ -511,7 +541,7 @@ header a img:hover {
 }
 
 
-/*responsivo (arrumado)*/
+/*responsivo*/
 @media (max-width: 480px) {
 
   .container-header-conteudo {
@@ -596,11 +626,6 @@ header a img:hover {
       height: 300apx;
   }
 
-  #trailer-container h3 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-  }
-
 
 .iframe-tela {
     display: flex;
@@ -616,6 +641,22 @@ header a img:hover {
     height:200px;
     border-radius: 12px;
     border: none;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    gap: 2px;
+    margin: 1px 0;
+}
+
+.filtros select{
+    padding: 6px 8px;
+    gap: 5px;
+}
+
+.footer p {
+    font-size: 0.7rem;
 }
 
 }
