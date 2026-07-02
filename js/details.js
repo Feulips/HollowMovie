@@ -1,261 +1,92 @@
-const API_KEY = "a3fda9b9d1d0aaee95df37313c16684e";
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+const detailsContainer = document.getElementById("detailsContainer");
 
-const campoPesquisa = document.getElementById("campoPesquisa");
-const botaoPesquisa = document.getElementById("botaoPesquisa");
-const filmesGrid = document.getElementById("filmesGrid");
-const inicio = document.getElementById("inicio");
-const series = document.getElementById("series");
-const filmes = document.getElementById("filmes");
 const params = new URLSearchParams(window.location.search);
-const tipo = params.get("tipo");
+const id = params.get("id");
+const type = params.get("type");
 
-// nomes dos gêneros por id, usados pra mostrar nos cards (preenchido em carregarMapaGeneros)
-let generosMovie = {};
-let generosTV = {};
-
-let paginaAtual = 1;
-// guarda a última URL "base" (sem page) pra paginação respeitar busca/filtro atual
-let ultimaURLBase = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
-
-async function requisicaoURL(url, resetPagina = true) {
-  try {
-    if (resetPagina) {
-      paginaAtual = 1;
-      ultimaURLBase = url;
-    }
-
-    filmesGrid.classList.add("fade-out");
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Erro na requisição");
-    }
-    const data = await response.json();
-
-    setTimeout(() => {
-      renderizarMidia(data.results);
-
-      filmesGrid.classList.remove("fade-out");
-      filmesGrid.classList.add("fade-in");
-
-      setTimeout(() => {
-        filmesGrid.classList.remove("fade-in");
-      }, 500);
-    }, 500);
-
-  } catch (error) {
-    console.error("Erro:", error);
-    filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
-  }
+function esconderLoader() {
+    const loader = document.getElementById("loading2");
+    if (loader) loader.style.display = "none";
 }
 
-function pesquisaGeral() {
-    const informacao = campoPesquisa.value.trim();
-    if (informacao == "") {
-        carregarTendenciasGeral();
+async function carregarDetalhes() {
+    if (!id || !type) {
+        detailsContainer.innerHTML = "<p>Conteudo invalido.</p>";
+        esconderLoader();
         return;
     }
-    const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(informacao)}&language=pt-BR`;
-    requisicaoURL(url);
-    campoPesquisa.value = "";
-}
-
-function renderizarMidia(filmes) {
-    filmesGrid.innerHTML = "";
-    if (!filmes || filmes.length === 0) {
-        filmesGrid.innerHTML = "<p>Nenhum filme encontrado.</p>";
-        return;
-    }
-    filmes.forEach(filme => {
-        const card = document.createElement("div");
-        card.classList.add("card");
-
-        const media_type = filme.title ? "movie" : "tv";
-        const titulo = filme.title || filme.name;
-        const imagem = filme.poster_path ? IMAGE_URL + filme.poster_path : "";
-        const nota = filme.vote_average ? filme.vote_average.toFixed(1) : "N/A";
-        const mapaGeneros = media_type === "movie" ? generosMovie : generosTV;
-        const nomesGeneros = (filme.genre_ids || [])
-            .map(id => mapaGeneros[id])
-            .filter(Boolean)
-            .join(", ");
-
-        card.innerHTML = `
-            <img src="${imagem}" alt="${titulo}">
-            <h3>${titulo}</h3>
-            <p>⭐ ${nota} ${nomesGeneros ? "• " + nomesGeneros : ""} ${filme.release_date ? "• " + filme.release_date : ""}</p>
-        `;
-
-        card.addEventListener("click", () => {
-            window.location.href = `pages/details.html?id=${filme.id}&type=${media_type}`;
-        });
-        filmesGrid.appendChild(card);
-    });
-}
-
-function carregarTendenciasGeral() {
-    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
-    requisicaoURL(url);
-}
-
-function buscaFilme() {
-    const url = `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=pt-BR`;
-    requisicaoURL(url);
-}
-
-function buscaSerie() {
-    const url = `${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=pt-BR`;
-    requisicaoURL(url);
-}
-
-botaoPesquisa.addEventListener("click", pesquisaGeral);
-campoPesquisa.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        pesquisaGeral();
-    }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    carregarMapaGeneros();
-    if (tipo === "filmes") {
-        buscaFilme();
-    } else if (tipo === "series") {
-        buscaSerie();
-    } else {
-        carregarTendenciasGeral();
-    }
-});
-
-document.getElementById("filtroPais").addEventListener("change", filtrarPorPais);
-document.getElementById("filtroNota").addEventListener("change", filtrarPorNota);
-carregarGeneros();
-document.getElementById("filtroGenero").addEventListener("change", filtrarPorGenero);
-carregarAnos();
-document.getElementById("filtroAno").addEventListener("change", filtrarPorAno);
-inicio.addEventListener("click", carregarTendenciasGeral);
-filmes.addEventListener("click", buscaFilme);
-series.addEventListener("click", buscaSerie);
-
-const botaoVoltar = document.getElementById("botaoVoltar");
-const botaoProximo = document.getElementById("botaoProximo");
-
-function construirURLComPagina(baseUrl, pagina) {
-    const url = new URL(baseUrl);
-    url.searchParams.set("page", pagina);
-    return url.toString();
-}
-
-function pularPagina() {
-    paginaAtual++;
-    requisicaoURL(construirURLComPagina(ultimaURLBase, paginaAtual), false);
-}
-
-function voltarPagina() {
-    if (paginaAtual > 1) {
-        paginaAtual--;
-    }
-    requisicaoURL(construirURLComPagina(ultimaURLBase, paginaAtual), false);
-}
-
-// preenche o mapa {id: nome} usado pra exibir os gêneros nos cards (filmes e séries)
-async function carregarMapaGeneros() {
     try {
-        const [resMovie, resTV] = await Promise.all([
-            fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=pt-BR`),
-            fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}&language=pt-BR`)
-        ]);
-        const dataMovie = await resMovie.json();
-        const dataTV = await resTV.json();
-        dataMovie.genres.forEach(g => generosMovie[g.id] = g.name);
-        dataTV.genres.forEach(g => generosTV[g.id] = g.name);
+        const response = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=pt-br`);
+        if (!response.ok) {
+            throw new Error("Erro na API");
+        }
+        const data = await response.json();
+        await renderizarDetalhes(data);
     } catch (error) {
-        console.error("Erro ao carregar gêneros:", error);
+        detailsContainer.innerHTML = "<p>Ocorreu um erro ao carregar os detalhes.</p>";
+        console.error(error);
+    } finally {
+        esconderLoader();
     }
 }
 
-// popula o <select> de filtro de gênero (padrão: filmes)
-async function carregarGeneros(tipoMidia = "movie") {
-    const response = await fetch(
-        `${BASE_URL}/genre/${tipoMidia}/list?api_key=${API_KEY}&language=pt-BR`
-    );
-    const data = await response.json();
-    const select = document.getElementById("filtroGenero");
-    select.innerHTML = `<option value="">Todos os Gêneros</option>`;
-    data.genres.forEach(genero => {
-        const option = document.createElement("option");
-        option.value = genero.id;
-        option.textContent = genero.name;
-        select.appendChild(option);
-    });
+async function renderizarDetalhes(item) {
+    const trailerURL = await buscarTrailer();
+    const imagem = item.poster_path ? IMAGE_URL + item.poster_path : "";
+
+ const imagemHTML = trailerURL
+    ? `<a href="${trailerURL}" target="_blank"><img src="${imagem}" alt="${item.title}"></a>`: `<img src="${imagem}" alt="${item.title}">`;
+
+    const titulo = item.title || item.name;
+    const dataLancamento = item.release_date || item.first_air_date; 
+    document.title = titulo;
+    const porcentagemNota = Math.round((item.vote_average / 10) * 100);
+    detailsContainer.innerHTML = `<div class="detalhe-card"> <img src="${imagem}" alt="${titulo}">
+            <div class="info"> <h2>${titulo}</h2> 
+            <p>Data: ${dataLancamento || "Não disponível"}</p>
+                <div class="avaliacao-frame">
+                    <label>Nota:</label>
+                    <div class="barra-avaliacao">
+                        <div class="barra-preenchida" style="width: ${porcentagemNota}%;"></div>
+                    </div>
+                    <span>${porcentagemNota}%</span>
+                </div>
+            ${item.tagline}<br>
+            ${item.overview}</p>
+        </div>
+    </div>`;
 }
 
-function filtrarPorGenero() {
-    const generoId = document.getElementById("filtroGenero").value;
-    if (!generoId) {
-        carregarTendenciasGeral();
-        return;
-    }
-    let endpoint = "movie";
-    if (tipo === "series") {
-        endpoint = "tv";
-    }
-    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&with_genres=${generoId}&language=pt-BR`;
-    requisicaoURL(url);
-}
 
-function carregarAnos() {
-    const selectAno = document.getElementById("filtroAno");
-    const anoAtual = new Date().getFullYear();
-    for (let ano = anoAtual; ano >= 1950; ano--) {
-        const option = document.createElement("option");
-        option.value = ano;
-        option.textContent = ano;
-        selectAno.appendChild(option);
+async function buscarTrailer() {
+    try {
+        const response = await fetch(
+            `${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=pt-BR`
+        );
+        const data = await response.json();
+        const trailer = data.results.find(video =>
+            video.type === "Trailer" && video.site === "YouTube"
+        );
+        const trailerContainer = document.getElementById("trailer-container");
+        if (!trailer) {
+            trailerContainer.innerHTML = "<p>Trailer não disponível.</p>";
+            return;
+        }
+        trailerContainer.innerHTML = `
+            <h3>Trailer</h3>
+            <div class="iframe-tela">
+                <iframe
+                    src="https://www.youtube.com/embed/${trailer.key}"
+                    allowfullscreen
+                    frameborder="0">
+                </iframe>
+            </div>
+        `;
+    } catch (error) {
+        console.error("Erro ao buscar trailer:", error);
     }
-}
+} 
 
-function filtrarPorAno() {
-    const ano = document.getElementById("filtroAno").value;
-    if (!ano) {
-        carregarTendenciasGeral();
-        return;
-    }
-    let endpoint = "movie";
-    if (tipo === "series") {
-        endpoint = "tv";
-    }
-    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&primary_release_year=${ano}`;
-    requisicaoURL(url);
-}
-
-function filtrarPorNota() {
-    const nota = document.getElementById("filtroNota").value;
-    if (!nota) {
-        carregarTendenciasGeral();
-        return;
-    }
-    let endpoint = "movie";
-    if (tipo === "series") {
-        endpoint = "tv";
-    }
-    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&vote_average.gte=${nota}`;
-    requisicaoURL(url);
-}
-
-function filtrarPorPais() {
-    const pais = document.getElementById("filtroPais").value;
-    if (!pais) {
-        carregarTendenciasGeral();
-        return;
-    }
-    let endpoint = "movie";
-    if (tipo === "series") {
-        endpoint = "tv";
-    }
-    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&with_origin_country=${pais}`;
-    requisicaoURL(url);
-}
+document.addEventListener("DOMContentLoaded", carregarDetalhes);
 
 //se chegou até aqui, parabéns, você é um herói por ler todo o código :)

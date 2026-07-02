@@ -1,45 +1,63 @@
-const API_KEY = "a3fda9b9d1d0aaee95df37313c16684e";
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-
 const campoPesquisa = document.getElementById("campoPesquisa");
 const botaoPesquisa = document.getElementById("botaoPesquisa");
 const filmesGrid = document.getElementById("filmesGrid");
 const inicio = document.getElementById("inicio");
 const series = document.getElementById("series");
 const filmes = document.getElementById("filmes");
-const params = new  URLSearchParams(window.location.search);
-const tipo = params.get ("tipo")
+const params = new URLSearchParams(window.location.search);
+const tipo = params.get("tipo");
 
+// nomes dos gêneros por id, usados pra mostrar nos cards (preenchido em carregarMapaGeneros)
+let generosMovie = {};
+let generosTV = {};
 
+let paginaAtual = 1;
+// guarda a última URL "base" (sem page) pra paginação respeitar busca/filtro atual
+let ultimaURLBase = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
 
-async function requisicaoURL(url) {
+async function requisicaoURL(url, resetPagina = true) {
   try {
+    if (resetPagina) {
+      paginaAtual = 1;
+      ultimaURLBase = url;
+    }
+
+    filmesGrid.classList.add("fade-out");
+
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Erro na requisição");
     }
-
     const data = await response.json();
-    renderizarMidia(data.results);
 
-  } catch (error) { 
+    setTimeout(() => {
+      renderizarMidia(data.results);
+
+      filmesGrid.classList.remove("fade-out");
+      filmesGrid.classList.add("fade-in");
+
+      setTimeout(() => {
+        filmesGrid.classList.remove("fade-in");
+      }, 500);
+    }, 500);
+
+  } catch (error) {
     console.error("Erro:", error);
     filmesGrid.innerHTML = "<p>Ocorreu um erro ao carregar os filmes.</p>";
   }
 }
 
-function pesquisaGeral () {
+function pesquisaGeral() {
     const informacao = campoPesquisa.value.trim();
     if (informacao == "") {
         carregarTendenciasGeral();
         return;
     }
-    console.log("Pesquisando por", informacao);
-    const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(informacao)}&linguagem=pt-br`;
+    const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(informacao)}&language=pt-BR`;
     requisicaoURL(url);
     campoPesquisa.value = "";
 }
+
 function renderizarMidia(filmes) {
     filmesGrid.innerHTML = "";
     if (!filmes || filmes.length === 0) {
@@ -49,44 +67,44 @@ function renderizarMidia(filmes) {
     filmes.forEach(filme => {
         const card = document.createElement("div");
         card.classList.add("card");
-        let media_type = "movie";
+
+        const media_type = filme.title ? "movie" : "tv";
+        const titulo = filme.title || filme.name;
         const imagem = filme.poster_path ? IMAGE_URL + filme.poster_path : "";
-        if (filme.title){card.innerHTML = `
-            <img src="${imagem}" alt="${filme.title}">
-            <h3>${filme.title}</h3>
-            <p>${filme.vote_average} ${filme.overview} ${filme.genre_ids} ${filme.release_date}</p>
+        const nota = filme.vote_average ? filme.vote_average.toFixed(1) : "N/A";
+        const mapaGeneros = media_type === "movie" ? generosMovie : generosTV;
+        const nomesGeneros = (filme.genre_ids || [])
+            .map(id => mapaGeneros[id])
+            .filter(Boolean)
+            .join(", ");
+
+        card.innerHTML = `
+            <img src="${imagem}" alt="${titulo}">
+            <h3>${titulo}</h3>
+            <p>⭐ ${nota} ${nomesGeneros ? "• " + nomesGeneros : ""} ${filme.release_date ? "• " + filme.release_date : ""}</p>
         `;
-        media_type = "movie";}
-        else {
-            card.innerHTML = `
-            <img src="${imagem}" alt="${filme.name}">
-            <h3>${filme.name}</h3>
-            <p>${filme.vote_average} ${filme.overview} ${filme.genre_ids} ${filme.release_date}</p>
-        `;
-        media_type = "tv";
-        }
-        card.addEventListener("click", () => { 
+
+        card.addEventListener("click", () => {
             window.location.href = `pages/details.html?id=${filme.id}&type=${media_type}`;
-     });
+        });
         filmesGrid.appendChild(card);
     });
 }
 
-function carregarTendenciasGeral() { 
-    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`; 
-    requisicaoURL(url); 
+function carregarTendenciasGeral() {
+    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR`;
+    requisicaoURL(url);
 }
 
-function buscaFilme() { 
-    const url = `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=pt-BR`;     
-    requisicaoURL(url); 
+function buscaFilme() {
+    const url = `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=pt-BR`;
+    requisicaoURL(url);
 }
 
-function buscaSerie() { 
-    const url = `${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=pt-BR`; 
-    requisicaoURL(url); 
+function buscaSerie() {
+    const url = `${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=pt-BR`;
+    requisicaoURL(url);
 }
-
 
 botaoPesquisa.addEventListener("click", pesquisaGeral);
 campoPesquisa.addEventListener("keydown", function (event) {
@@ -95,13 +113,13 @@ campoPesquisa.addEventListener("keydown", function (event) {
     }
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
-    if (tipo === "filmes"){
+    carregarMapaGeneros();
+    if (tipo === "filmes") {
         buscaFilme();
-    }else if (tipo === "series"){
+    } else if (tipo === "series") {
         buscaSerie();
-    }else {
+    } else {
         carregarTendenciasGeral();
     }
 });
@@ -112,46 +130,61 @@ carregarGeneros();
 document.getElementById("filtroGenero").addEventListener("change", filtrarPorGenero);
 carregarAnos();
 document.getElementById("filtroAno").addEventListener("change", filtrarPorAno);
-// document.addEventListener("DOMContentLoaded", carregarTendenciasGeral);
 inicio.addEventListener("click", carregarTendenciasGeral);
 filmes.addEventListener("click", buscaFilme);
 series.addEventListener("click", buscaSerie);
 
-
 const botaoVoltar = document.getElementById("botaoVoltar");
 const botaoProximo = document.getElementById("botaoProximo");
 
-let paginaAtual = 1;
-
+function construirURLComPagina(baseUrl, pagina) {
+    const url = new URL(baseUrl);
+    url.searchParams.set("page", pagina);
+    return url.toString();
+}
 
 function pularPagina() {
-  paginaAtual++;
-    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR&page=${paginaAtual}`; 
-    requisicaoURL(url); 
+    paginaAtual++;
+    requisicaoURL(construirURLComPagina(ultimaURLBase, paginaAtual), false);
 }
 
 function voltarPagina() {
     if (paginaAtual > 1) {
         paginaAtual--;
     }
-    const url = `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=pt-BR&page=${paginaAtual}`; 
-    requisicaoURL(url); 
+    requisicaoURL(construirURLComPagina(ultimaURLBase, paginaAtual), false);
 }
 
+// preenche o mapa {id: nome} usado pra exibir os gêneros nos cards (filmes e séries)
+async function carregarMapaGeneros() {
+    try {
+        const [resMovie, resTV] = await Promise.all([
+            fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=pt-BR`),
+            fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}&language=pt-BR`)
+        ]);
+        const dataMovie = await resMovie.json();
+        const dataTV = await resTV.json();
+        dataMovie.genres.forEach(g => generosMovie[g.id] = g.name);
+        dataTV.genres.forEach(g => generosTV[g.id] = g.name);
+    } catch (error) {
+        console.error("Erro ao carregar gêneros:", error);
+    }
+}
 
-async function carregarGeneros (tipo = "movie") {
-  const response = await fetch(
-    `${BASE_URL}/genre/${tipo}/list?api_key=${API_KEY}&language=pt-BR`
-  );
-  const data = await response.json();
-  const select = document.getElementById("filtroGenero");
-  select.innerHTML = `Todos`;
-  data.genres.forEach(genero => {
-    const option = document.createElement("option");
-    option.value = genero.id;
-    option.textContent = genero.name;
-    select.appendChild(option);
-  });
+// popula o <select> de filtro de gênero (padrão: filmes)
+async function carregarGeneros(tipoMidia = "movie") {
+    const response = await fetch(
+        `${BASE_URL}/genre/${tipoMidia}/list?api_key=${API_KEY}&language=pt-BR`
+    );
+    const data = await response.json();
+    const select = document.getElementById("filtroGenero");
+    select.innerHTML = `<option value="">Todos os Gêneros</option>`;
+    data.genres.forEach(genero => {
+        const option = document.createElement("option");
+        option.value = genero.id;
+        option.textContent = genero.name;
+        select.appendChild(option);
+    });
 }
 
 function filtrarPorGenero() {
@@ -161,7 +194,7 @@ function filtrarPorGenero() {
         return;
     }
     let endpoint = "movie";
-    if (tipo === "serie") {
+    if (tipo === "series") {
         endpoint = "tv";
     }
     const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&with_genres=${generoId}&language=pt-BR`;
@@ -169,47 +202,43 @@ function filtrarPorGenero() {
 }
 
 function carregarAnos() {
-const selectAno = document.getElementById("filtroAno");
-const anoAtual = new Date().getFullYear();
-for (let ano = anoAtual; ano >= 1950; ano--) {
-const option = document.createElement("option");
-option.value = ano;
-option.textContent = ano;
-selectAno.appendChild(option);
+    const selectAno = document.getElementById("filtroAno");
+    const anoAtual = new Date().getFullYear();
+    for (let ano = anoAtual; ano >= 1950; ano--) {
+        const option = document.createElement("option");
+        option.value = ano;
+        option.textContent = ano;
+        selectAno.appendChild(option);
+    }
 }
-}
-
 
 function filtrarPorAno() {
-const ano = document.getElementById("filtroAno").value;
-if (!ano) {
-carregarTendenciasGeral();
-return;
-}
-let endpoint = "movie";
-if (tipo === "serie") {
-endpoint = "tv";
-}
-const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&
-primary_release_year=${ano}`;
-requisicaoURL(url);
+    const ano = document.getElementById("filtroAno").value;
+    if (!ano) {
+        carregarTendenciasGeral();
+        return;
+    }
+    let endpoint = "movie";
+    if (tipo === "series") {
+        endpoint = "tv";
+    }
+    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&primary_release_year=${ano}`;
+    requisicaoURL(url);
 }
 
 function filtrarPorNota() {
-const nota = document.getElementById("filtroNota").value;
-if (!nota) {
-carregarTendenciasGeral();
-return;
+    const nota = document.getElementById("filtroNota").value;
+    if (!nota) {
+        carregarTendenciasGeral();
+        return;
+    }
+    let endpoint = "movie";
+    if (tipo === "series") {
+        endpoint = "tv";
+    }
+    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&vote_average.gte=${nota}`;
+    requisicaoURL(url);
 }
-let endpoint = "movie";
-if (tipo === "serie") {
-endpoint = "tv";
-}
-const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&
-vote_average.gte=${nota}`;
-requisicaoURL(url);
-}
-
 
 function filtrarPorPais() {
     const pais = document.getElementById("filtroPais").value;
@@ -217,17 +246,12 @@ function filtrarPorPais() {
         carregarTendenciasGeral();
         return;
     }
-    const params = new URLSearchParams(window.location.search);
-    const tipo = params.get("tipo");
     let endpoint = "movie";
-    if (tipo === "serie") {
+    if (tipo === "series") {
         endpoint = "tv";
     }
-    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&
-with_origin_country=${pais}`;
+    const url = `${BASE_URL}/discover/${endpoint}?api_key=${API_KEY}&language=pt-BR&with_origin_country=${pais}`;
     requisicaoURL(url);
 }
-
-
 
 //se chegou até aqui, parabéns, você é um herói por ler todo o código :)
