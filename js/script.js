@@ -67,25 +67,41 @@ function renderizarMidia(filmes) {
     filmes.forEach(filme => {
         const card = document.createElement("div");
         card.classList.add("card");
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
 
         const media_type = filme.title ? "movie" : "tv";
         const titulo = filme.title || filme.name;
         const imagem = filme.poster_path ? IMAGE_URL + filme.poster_path : "";
         const nota = filme.vote_average ? filme.vote_average.toFixed(1) : "N/A";
+        const ano = (filme.release_date || filme.first_air_date || "").slice(0, 4);
         const mapaGeneros = media_type === "movie" ? generosMovie : generosTV;
         const nomesGeneros = (filme.genre_ids || [])
             .map(id => mapaGeneros[id])
             .filter(Boolean)
+            .slice(0, 2)
             .join(", ");
+        const meta = [nomesGeneros, ano].filter(Boolean).join(" • ");
 
+        card.setAttribute("aria-label", titulo);
         card.innerHTML = `
-            <img src="${imagem}" alt="${titulo}">
-            <h3>${titulo}</h3>
-            <p>⭐ ${nota} ${nomesGeneros ? "• " + nomesGeneros : ""} ${filme.release_date ? "• " + filme.release_date : ""}</p>
+            <img src="${imagem}" alt="${titulo}" loading="lazy">
+            <span class="badge-nota">★ ${nota}</span>
+            <div class="card-scrim">
+                <h3>${titulo}</h3>
+                ${meta ? `<p class="card-meta">${meta}</p>` : ""}
+            </div>
         `;
 
-        card.addEventListener("click", () => {
+        const irParaDetalhes = () => {
             window.location.href = `pages/details.html?id=${filme.id}&type=${media_type}`;
+        };
+        card.addEventListener("click", irParaDetalhes);
+        card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                irParaDetalhes();
+            }
         });
         filmesGrid.appendChild(card);
     });

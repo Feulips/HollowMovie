@@ -37,15 +37,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", function(){
+    // na home (script.js) esses links já filtram sem reload; aqui cuidamos
+    // só da página de detalhes, que precisa voltar pro index
+    if (!window.location.pathname.includes("/pages/")) return;
+
     const inicio = document.getElementById("inicio");
-    const filmes = document.getElementById("filmes"); 
-    const series = document.getElementById("series"); 
+    const filmes = document.getElementById("filmes");
+    const series = document.getElementById("series");
 
     inicio.addEventListener("click", function(){
         window.location.href = "../index.html";
     });
     filmes.addEventListener("click", function(){
-        window.location.href = "../index.html?tipo=filmes"; 
+        window.location.href = "../index.html?tipo=filmes";
     });
     series.addEventListener("click", function(){
         window.location.href = "../index.html?tipo=series";

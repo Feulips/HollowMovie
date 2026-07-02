@@ -33,28 +33,36 @@ async function carregarDetalhes() {
 async function renderizarDetalhes(item) {
     const trailerURL = await buscarTrailer();
     const imagem = item.poster_path ? IMAGE_URL + item.poster_path : "";
-
- const imagemHTML = trailerURL
-    ? `<a href="${trailerURL}" target="_blank"><img src="${imagem}" alt="${item.title}"></a>`: `<img src="${imagem}" alt="${item.title}">`;
-
     const titulo = item.title || item.name;
-    const dataLancamento = item.release_date || item.first_air_date; 
+    const dataLancamento = item.release_date || item.first_air_date;
     document.title = titulo;
+    const notaFormatada = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
     const porcentagemNota = Math.round((item.vote_average / 10) * 100);
-    detailsContainer.innerHTML = `<div class="detalhe-card"> <img src="${imagem}" alt="${titulo}">
-            <div class="info"> <h2>${titulo}</h2> 
-            <p>Data: ${dataLancamento || "Não disponível"}</p>
+
+    const imagemInterna = `<img src="${imagem}" alt="${titulo}">`;
+    const posterHTML = trailerURL
+        ? `<a href="${trailerURL}" target="_blank" rel="noopener">${imagemInterna}</a>`
+        : imagemInterna;
+
+    detailsContainer.innerHTML = `<div class="detalhe-card">
+            <div class="detalhe-poster">
+                ${posterHTML}
+                <span class="badge-nota">★ ${notaFormatada}</span>
+            </div>
+            <div class="info">
+                <h2>${titulo}</h2>
+                ${item.tagline ? `<p class="tagline">"${item.tagline}"</p>` : ""}
+                <p class="meta-linha">${dataLancamento || "Data não disponível"}</p>
                 <div class="avaliacao-frame">
-                    <label>Nota:</label>
+                    <label>Nota</label>
                     <div class="barra-avaliacao">
                         <div class="barra-preenchida" style="width: ${porcentagemNota}%;"></div>
                     </div>
                     <span>${porcentagemNota}%</span>
                 </div>
-            ${item.tagline}<br>
-            ${item.overview}</p>
-        </div>
-    </div>`;
+                <p class="sinopse">${item.overview || "Sinopse não disponível."}</p>
+            </div>
+        </div>`;
 }
 
 
