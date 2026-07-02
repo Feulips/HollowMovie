@@ -7,22 +7,22 @@
     <script src="js/animation.js" defer></script>
     <script src="js/global.js" defer></script>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/jpg" href="assets/icons/icon.png">
+    <link rel="icon" type="image/png" href="assets/icons/icon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Hollowovie</title>
+    <title>HollowMovie</title>
 
 </head>
 <body>
 
 <div id="loading2"  class="loading2">
-    <div class="move" id="move"> <img src="../assets/icons/loading.gif"></div>
+    <div class="move" id="move"> <img src="assets/icons/loading.gif"></div>
   <p>Aguarde… enquanto antigas histórias ganham forma na luz tremulante...</p>
 </div>
 
 <header>
     <div class="container-header-conteudo">
-        <a href="index.html"><img src="assets/icons/icon.png" id="logoImg" alt=""></a>
-        <h1>Things to Watch</h1> <br>
+        <a href="index.html"><img src="assets/icons/icon.png" id="logoImg" alt="Logo HollowMovie"></a>
+        <h1>Things to Watch</h1>
         <nav class="navegacao">
             <a href="index.html" id="inicio">inicio</a>
             <a href="#" id="filmes">filmes</a>
@@ -38,6 +38,7 @@
    
     <section class="pesquisa-section">
         <div class="container-pesquisa-conteudo">
+            <label for="campoPesquisa" class="sr-only">Pesquisar por filme</label>
             <input type="text" placeholder=" Pesquisar por filme... " id="campoPesquisa">
             <button class="pesquisa-button" id="botaoPesquisa">
                 <img src="assets/icons/lupa.png" alt="Pesquisar" height="12" width="12">
@@ -45,11 +46,15 @@
         </div>
     </section>
 <div class="filtros">
- <select id="filtroGenero"></select>
+    <label for="filtroGenero" class="sr-only">Filtrar por gênero</label>
+    <select id="filtroGenero"></select>
+
+    <label for="filtroAno" class="sr-only">Filtrar por ano</label>
     <select id="filtroAno">
         <option value="">Todos os Anos</option>
     </select>
-    
+
+    <label for="filtroNota" class="sr-only">Filtrar por nota mínima</label>
     <select id="filtroNota">
         <option value="">Qualquer Nota</option>
         <option value="5">5+</option>
@@ -57,21 +62,23 @@
         <option value="7">7+</option>
         <option value="8">8+</option>
     </select>
-<select id="filtroPais">
-    <option value="">Todos os países</option>
-    <option value="US">Estados Unidos</option>
-    <option value="BR">Brasil</option>
-    <option value="KR">Coreia do Sul</option>
-    <option value="JP">Japão</option>
-    <option value="ES">Espanha</option>
-    <option value="FR">França</option>
-    <option value="GB">Reino Unido</option>
-</select>
+
+    <label for="filtroPais" class="sr-only">Filtrar por país</label>
+    <select id="filtroPais">
+        <option value="">Todos os países</option>
+        <option value="US">Estados Unidos</option>
+        <option value="BR">Brasil</option>
+        <option value="KR">Coreia do Sul</option>
+        <option value="JP">Japão</option>
+        <option value="ES">Espanha</option>
+        <option value="FR">França</option>
+        <option value="GB">Reino Unido</option>
+    </select>
 </div>
 
 
     <section class="exibeFilme-section">
-        <div  id="filmesGrid" onclick="funcao(loading2)"></div>
+        <div  id="filmesGrid"></div>
     </section>
         <div class="paginacao">
         <button id="botaoVoltar" onclick="voltarPagina()">Voltar</button>
@@ -83,7 +90,7 @@
     <a href="https://github.com/Feulips" target="_blank" class="github">
         <i class="bi bi-github"></i>
     </a>
-    <p> © 2025 • Feito com <span class="heart">🤍</span> por Felipe Carvalho</p>
+    <p> © 2025 • Feito com <span class="heart">🩶</span> por Felipe Carvalho</p>
 </footer>
 </body>
 </html>
