@@ -1,4 +1,9 @@
- function toggleLight() {
+// caminho dos ícones muda dependendo se estamos na raiz (index.html) ou em /pages
+const ASSET_PATH = window.location.pathname.includes("/pages/")
+  ? "../assets/icons/"
+  : "assets/icons/";
+
+function toggleLight() {
   const body = document.body;
   body.classList.toggle("light");
 
@@ -7,14 +12,13 @@
   icon.classList.toggle("bi-moon");
 
   const logo = document.getElementById("logoImg");
-  const move = document.getElementById("move");
 
   if (body.classList.contains("light")) {
     localStorage.setItem("theme", "light");
-    logo.src = "../assets/icons/icon2.png";
+    logo.src = ASSET_PATH + "icon2.png";
   } else {
-    localStorage.setItem("theme", "dark"); 
-    logo.src = "../assets/icons/icon.png";
+    localStorage.setItem("theme", "dark");
+    logo.src = ASSET_PATH + "icon.png";
   }
 }
 
@@ -25,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (savedTheme === "light") {
     document.body.classList.add("light");
-    logo.src = "../assets/icons/icon2.png";
+    logo.src = ASSET_PATH + "icon2.png";
     icon.classList.remove("bi-moon");
     icon.classList.add("bi-brightness-high");
   }
